@@ -225,7 +225,8 @@ th:nth-of-type(6) {color: #00F3F3; text-shadow: 1px 1px #003333;}
 
 
 @media only screen and (max-width: 768px) {
-body {margin:0 }
+body {margin:0 
+      width: 100%;}
 #wrapper {min-width: 0; 
 	  width: auto;}
 #content {margin-left: 0;}
@@ -239,7 +240,8 @@ footer {margin-left: 0;}
 }
 
 @media only screen and (max-width: 480px) {
-body {margin:0 }
+body {margin:0 
+      width: 100%;}
 #wrapper {min-width: 0; 
 	  width: auto;
 	  margin: 0;}
