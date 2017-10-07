@@ -30,12 +30,15 @@
   <main id="content">
     <div class="hanged">
     <div class="hanged-inner">
-
+      <p id="message"> </p>
+      <div id="creeper-div">
+        <img id="creeper" src="">
+      </div>
     </div>
     </div>
     <div class="game">
     <div class="game-inner">
-      <h2>Let's play Hangman!</h2>
+      <h2>Avoid the Creeper!</h2>
 
   
 
@@ -73,23 +76,38 @@
 $(document).ready(function() {
   playGame();
   function playGame() {
-    var wordList = ["bedrock", "biome", "block", "cobblestone", "crafting", "creeper", "diamond", "dungeon", "enderman", "farming", "furnace", "inventory", "mining", "mobs", "mojang", "nether", "obsidian", "overworld", "portal", "redstone", "skeleton", "smelting", "stronghold", "temple", "tools", "wither", "zombie"];
+    var wordList = ["bedrock", "biome", "block", "cobblestone", "crafting", "crafting table", "creeper", "diamond", "dungeon", "emerald", "the end", "ender dragon", "enderman", "farming", "furnace", "inventory", "lapis lazuli", "mining", "mobs", "mojang", "nether", "obsidian", "overworld", "pickaxe", "portal", "redstone", "skeleton", "smelting", "spawn point", "spider", "spider jockey", "stronghold", "temple", "tools", "witch", "wither", "zombie", "zombie pigmen"];
+    var wrongGuessImgs = ["assets/images/half-creeper.png", "assets/images/full-creeper.png", "assets/images/full-creeper-flash.png", "assets/images/full-creeper-flash.png", "assets/images/full-creeper-flash.png", "assets/images/creeper-explode.png"]
     var userGuess;
+    var wrongGuessNum = -1;
     var guesses = [];
     var blankWord= [];
     var remainingGuesses = 6;
+    var gameOver = false;
     var testWord = wordList[Math.floor(Math.random() * wordList.length)];
     var blankWordFill = document.getElementById("word");
+    var instruction = document.getElementById("message");
 
-    blankWordFill.textContent = "";
+    instruction.innerHTML = ("");
+
+    blankWordFill.innerHTML = "";
     $("#letters-guessed").text("");
 
+    // Converts the word to blank spaces so the player has to guess
     for (var i = 0; i < testWord.length; i++) {
-      blankWord.push("_");
-      blankWordFill.textContent += " " + blankWord[i] + " ";
+      if (testWord[i] === " ") {
+        console.log("D");
+        blankWord.push("&nbsp");
+        blankWordFill.innerHTML += " " + blankWord[i] + " ";
+      } else {
+        console.log("E");
+        blankWord.push("_");
+        blankWordFill.innerHTML += " " + blankWord[i] + " ";
+      }
     }
     $("#numGuessRemain").text(remainingGuesses);
 
+      // Checks and tracks which letters have been guessed
       function previousGuesses() {
         if (guesses.indexOf(userGuess) < 0) {
             guesses.push(userGuess);
@@ -99,9 +117,18 @@ $(document).ready(function() {
       };
 
       function userTakesAGuess() {
-          if (testWord.indexOf(userGuess) < 0) {
+        
+          // Checks if the guessed letter is in the word.
+          if (testWord.indexOf(userGuess) < 0) { // Letter is not in the word(s)
             console.log("A");
-            if (guesses.indexOf(userGuess) < 0) {
+            if (guesses.indexOf(userGuess) < 0) { // If letter already guessed, skip this(do nothing)
+              wrongGuessNum += 1;
+              $("#creeper").attr("src", wrongGuessImgs[wrongGuessNum]);
+              if (wrongGuessNum >= 1 && wrongGuessNum < (wrongGuessImgs.length-1)) {
+                setTimeout(function() {
+                  $("#creeper").attr("src", "assets/images/full-creeper.png");
+                }, 1000);
+              }
               remainingGuesses -= 1;
             }
             $("#numGuessRemain").text(remainingGuesses);
@@ -113,24 +140,64 @@ $(document).ready(function() {
                 blankWord[l] = testWord[l];
                 var blankLetterFill = "";
                 for (var j=0; j<blankWord.length; j++){
-                  blankLetterFill += " " + blankWord[j].toUpperCase() + " ";
+                  if (blankWord[j] === "&nbsp") {
+                    console.log("G")
+                    blankLetterFill += " " + blankWord[j] + " ";
+                  } else {
+                    blankLetterFill += " " + blankWord[j].toUpperCase() + " ";
+                  }
                 }
-                blankWordFill.textContent = blankLetterFill;
+                blankWordFill.innerHTML = blankLetterFill;
+              }
+            }
+            if (wrongGuessNum >= 1) {
+              $("#creeper").attr("src", "assets/images/hurt-creeper.png");
+              if (!(blankWord.indexOf("_") < 0)) {
+                setTimeout(function() {
+                  $("#creeper").attr("src", "assets/images/full-creeper.png");
+                }, 500);
               }
             }
           }
+        
       };
 
     document.onkeyup = function(event) {
         userGuess = event.key;
-        userTakesAGuess();
-        previousGuesses();
+        console.log(event.keyCode);
+        // Need another If for the game over
+        if (!gameOver) {
+          // Checks that the keypress is an alpha
+          if ((event.keyCode > 64 && event.keyCode < 91) || // upper alpha (A-Z)
+            (event.keyCode > 96 && event.keyCode < 123)) { // lower alpha (a-z))
+          userTakesAGuess();
+          previousGuesses();
+          }
+        }
         if (blankWord.indexOf("_") < 0) {
-          alert("YOU WIN!!");
-          playGame();
+          instruction.innerHTML = ("YOU WIN!!<br>Press space to play again.");
+          $("#creeper").attr("src", "assets/images/dead-creeper.png");
+          setTimeout(function() {
+            $("#creeper").attr("src", "assets/images/gunpowder.png");
+          }, 1000);
+          gameOver = true;
+          if (userGuess === " ") {
+            playGame();
+          }
         } else if (remainingGuesses === 0) {
-          alert("You Lose :(");
-          playGame();
+          blankWordFill.innerHTML = "";
+          for (var i = 0; i < testWord.length; i++) {
+            if (testWord[i] === " ") {
+              blankWordFill.innerHTML += " &nbsp ";
+            } else {
+              blankWordFill.innerHTML += " " + testWord[i].toUpperCase() + " ";
+            }
+          }
+          instruction.innerHTML = ("You lose. :(<br>Press space to play again.");
+          gameOver = true;
+          if (userGuess === " ") {
+            playGame();
+          }
         }
       };
 

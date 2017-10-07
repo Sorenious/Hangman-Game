@@ -110,9 +110,27 @@ h3 {color:#000;
     margin: auto;
     border: 3px dashed #A48466;
     flex: 1 0 auto;
+    text-align: center;
     min-height: 450px;
     height: 100%;
   }
+
+#creeper-div {
+  margin, padding: 0px;
+  clear: both;
+}
+
+#creeper {
+  max-height: 350px;
+}
+
+#message {
+  min-height: 75px;
+  /*color:#EFEF52;
+    font-family: Rockwell, Georgia, "Times New Roman", serif;
+    text-shadow: 1px 1px 1px #BDBD4A;
+    text-shadow: -1px -1px 1px #BDBD4A, 1px 1px 1px #BDBD4A, 1px -1px 1px #BDBD4A, -1px 1px 1px #BDBD4A;*/ 
+}
 
 .game {
   border: 3px dashed #CAA48A;
@@ -131,7 +149,7 @@ h3 {color:#000;
   }
 
 p {
-  display: inline-block;;
+  display: inline-block;
 }
 
 #word {
