@@ -234,7 +234,8 @@ body {margin: 0 auto;
       width: 90%;}
 #wrapper {min-width: 0; 
 	  width: auto;}
-#content {margin-left: 0;}
+#content {margin-left: 0;
+          padding: 15px;}
 nav {float: none;
      width: auto;
      padding: 0;}
