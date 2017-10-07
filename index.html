@@ -77,7 +77,7 @@ $(document).ready(function() {
   playGame();
   function playGame() {
     var wordList = ["bedrock", "biome", "block", "cobblestone", "crafting", "crafting table", "creeper", "diamond", "dungeon", "emerald", "the end", "ender dragon", "enderman", "farming", "furnace", "inventory", "lapis lazuli", "mining", "mobs", "mojang", "nether", "obsidian", "overworld", "pickaxe", "portal", "redstone", "skeleton", "smelting", "spawn point", "spider", "spider jockey", "stronghold", "temple", "tools", "witch", "wither", "zombie", "zombie pigmen"];
-    var wrongGuessImgs = ["assets/images/half-creeper.png", "assets/images/full-creeper.png", "assets/images/full-creeper-flash.png", "assets/images/full-creeper-flash.png", "assets/images/full-creeper-flash.png", "assets/images/creeper-explode.png"]
+    var wrongGuessImgs = ["assets/images/half-creeper.png", "assets/images/full-creeper.png", "assets/images/full-creeper-flash.png", "assets/images/full-creeper-flash.png", "assets/images/full-creeper-flash.png", "assets/images/full-creeper-flash.png"]
     var userGuess;
     var wrongGuessNum = -1;
     var guesses = [];
@@ -92,6 +92,7 @@ $(document).ready(function() {
 
     blankWordFill.innerHTML = "";
     $("#letters-guessed").text("");
+    $("#creeper").attr("src", "");
 
     // Converts the word to blank spaces so the player has to guess
     for (var i = 0; i < testWord.length; i++) {
@@ -176,10 +177,12 @@ $(document).ready(function() {
         }
         if (blankWord.indexOf("_") < 0) {
           instruction.innerHTML = ("YOU WIN!!<br>Press space to play again.");
-          $("#creeper").attr("src", "assets/images/dead-creeper.png");
-          setTimeout(function() {
-            $("#creeper").attr("src", "assets/images/gunpowder.png");
-          }, 1000);
+          if (!gameOver && wrongGuessNum >= 1) {
+            $("#creeper").attr("src", "assets/images/dead-creeper.png");
+            setTimeout(function() {
+              $("#creeper").attr("src", "assets/images/gunpowder.png");
+            }, 1000);
+          }
           gameOver = true;
           if (userGuess === " ") {
             playGame();
@@ -194,6 +197,23 @@ $(document).ready(function() {
             }
           }
           instruction.innerHTML = ("You lose. :(<br>Press space to play again.");
+          if (!gameOver) {
+            var audioElement = document.createElement("audio");
+            audioElement.setAttribute("src", "assets/sounds/creeper-sound.mp3");
+            audioElement.play();
+            setTimeout(function() {
+              $("#creeper").attr("src", "assets/images/full-creeper.png");
+              setTimeout(function() {
+                $("#creeper").attr("src", "assets/images/full-creeper-flash.png");
+                setTimeout(function() {
+                  $("#creeper").attr("src", "assets/images/full-creeper.png");
+                  setTimeout(function() {
+                    $("#creeper").attr("src", "assets/images/creeper-explode.png");
+                  }, 900);
+                }, 900);
+              }, 900);
+            }, 900);
+          }
           gameOver = true;
           if (userGuess === " ") {
             playGame();
